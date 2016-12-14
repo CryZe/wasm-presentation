@@ -33,3 +33,22 @@
   background-image: linear-gradient(to bottom, #34d934, #2db32d);
   text-decoration: none;
 }
+
+.ball {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    background-image: -webkit-radial-gradient(10px 10px, circle cover, hsla(125, 60%, 50%, 1), hsla(125, 70%, 15%, 1));
+    background-image: radial-gradient(at 10px 10px, hsla(125, 60%, 50%, 1) 0%, hsla(125, 70%, 15%, 1) 100%);
+}
+
+.domain {
+    /*background-color: green;*/
+    margin-left: 230px !important;
+    border-bottom-width: 20px;
+    border-bottom-color: white;
+    border-bottom-style: solid;
+    width: 500px;
+    height: 475px;
+}
