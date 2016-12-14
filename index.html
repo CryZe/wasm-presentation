@@ -20,6 +20,66 @@
 			link.type = 'text/css';
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
+
+			var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'sysprog.wasm', true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = function() {
+                var config = { wasmBinary: xhr.response, printErr: printErr };
+                var codeXHR = new XMLHttpRequest();
+                codeXHR.open('GET', 'sysprog.js', true);
+                codeXHR.onload = function() {
+                    var code = codeXHR.responseText;
+                    var blob = new Blob([code], {type: 'text/javascript'});
+                    codeXHR = null;
+                    var src = URL.createObjectURL(blob);
+                    var script = document.createElement('script');
+                    script.src = URL.createObjectURL(blob);
+                    script.onload = function() {
+                        URL.revokeObjectURL(script.src);
+                        var sysprog = SysProg(config);
+                        parse = sysprog.cwrap('parse', 'string', ['string']);
+                        format = sysprog.cwrap('format_asm', 'string', ['string']);
+                        interpret = sysprog.cwrap('interpret', 'string', ['string', 'number']);
+                    };
+                    document.body.appendChild(script);
+                }
+                codeXHR.send(null);
+            };
+            xhr.send(null);
+
+			isCompiling = false;
+            function printErr(e) {
+                if (isCompiling) {
+                    document.getElementById("result").innerText += e + "\n";
+                } else {
+                    console.warn(e);
+                }
+            }
+
+			function compile() {
+                console.log("Compiling...");
+                var code = document.getElementById("code").innerText;
+                try {
+					Reveal.next();
+                    isCompiling = true;
+                    var asm = parse(code);
+                    asm = format(asm);
+                    document.getElementById("result").innerText = "Compilation successful!";
+                    document.getElementById("asm").innerText = asm;
+                } catch (e) {
+                    printErr(e);
+                    document.getElementById("asm").innerText = "";
+                }
+                isCompiling = false;
+            }
+
+			function runASM() {
+                console.log("Running...");
+                var asm = document.getElementById("asm").innerText;
+                var result = interpret(asm, 0);
+                document.getElementById("result").innerText = result;
+            }
 		</script>
 	</head>
 	<body>
@@ -201,9 +261,41 @@ end
 				<section>
 					<h2>Demos</h2>
 
-					<p><a href="https://cryze.github.io/rust-wasm-test/">Lambdakalkül Interpreter</a></p>
-					<p><a href="https://cryze.github.io/rust-wasm-test/gol.html">Game of Life</a></p>
-					<p><a href="https://cryze.github.io/rust-wasm-test-nphysics/">Physikdemo</a></p>
+					<section>
+						<p><a href="https://cryze.github.io/rust-wasm-test/">Lambdakalkül Interpreter</a></p>
+						<p><a href="https://cryze.github.io/rust-wasm-test/gol.html">Game of Life</a></p>
+						<p><a href="https://cryze.github.io/rust-wasm-test-nphysics/">Physikdemo</a></p>
+					</section>
+					<section>
+						<pre style="width: 100%" ><code id="code" class="hljs cpp" contenteditable data-trim style="line-height: 1.2em;font-size: 1em;">
+/* Heron-Verfahren zur Berechnung der Quadratwurzel */
+
+int a;
+int xn;
+int xn1;
+
+read(a);
+xn = 0;
+xn1 = (a + 1) / 2;
+
+while (xn =!= xn1)
+{
+	xn = xn1;
+	xn1 = (xn + (a / xn)) / 2;
+};
+
+print(xn);
+						</code></pre>
+						<button class="btn" onclick="compile();">Compile</button>
+					</section>
+					<section>
+						<pre style="width: 100%" ><code id="asm" class="hljs no-highlight" contenteditable data-trim style="line-height: 1.2em;font-size: 1em;">
+						</code></pre>
+						<pre style="width: 100%" ><code id="result" class="hljs no-highlight" data-trim style="line-height: 1.2em;font-size: 1em;">
+Compile your code to see a result!
+						</code></pre>
+						<button class="btn" onclick="runASM();">Run</button>
+					</section>
 				</section>
 			</div>
 		</div>
