@@ -265,26 +265,21 @@ end
 					<h2>Demos</h2>
 
 					<section>
-						<p><a href="https://cryze.github.io/rust-wasm-test/">Lambdakalkül Interpreter</a></p>
-						<p><a href="https://cryze.github.io/rust-wasm-test/gol.html">Game of Life</a></p>
-						<p><a href="https://cryze.github.io/rust-wasm-test-nphysics/">Physikdemo</a></p>
-					</section>
-					<section>
 						<pre style="width: 100%" ><code id="code" class="hljs cpp" contenteditable data-trim style="line-height: 1.2em;font-size: 1em;">
 /* Heron-Verfahren zur Berechnung der Quadratwurzel */
 
-int a;
+int input;
 int xn;
 int xn1;
 
-read(a);
+read(input);
 xn = 0;
-xn1 = (a + 1) / 2;
+xn1 = (input + 1) / 2;
 
 while (xn =!= xn1)
 {
 	xn = xn1;
-	xn1 = (xn + (a / xn)) / 2;
+	xn1 = (xn + (input / xn)) / 2;
 };
 
 print(xn);
@@ -292,9 +287,9 @@ print(xn);
 						<button class="btn" onclick="compile();">Compile</button>
 					</section>
 					<section>
-						<pre style="width: 100%" ><code id="asm" class="hljs no-highlight" contenteditable data-trim style="line-height: 1.2em;font-size: 1em;">
+						<pre style="width: 100%" ><code id="asm" class="hljs no-highlight" contenteditable data-trim style="line-height: 1.2em;font-size: 1em; height: 17em;">
 						</code></pre>
-						<pre style="width: 100%" ><code id="result" class="hljs no-highlight" data-trim style="line-height: 1.2em;font-size: 1em;">
+						<pre style="width: 100%" ><code id="result" class="hljs no-highlight" data-trim style="line-height: 1.2em;font-size: 2em;">
 Compile your code to see a result!
 						</code></pre>
 						<button class="btn" onclick="runASM();">Run</button>
@@ -303,6 +298,35 @@ Compile your code to see a result!
 						<div class="domain"></div>
 						<button class="btn" id="spawn">Spawn</button>
 					</section>
+				</section>
+				<section>
+					<h2>Benchmark</h2>
+					<canvas class="stretch" data-chart="horizontalBar">
+<!--
+{
+ "data": {
+  "labels": ["Nativ (57 ms)", "wasm Firefox (143 ms)", "asm.js Firefox (162 ms)", "asm.js Edge (199 ms)", "wasm Chrome (223 ms)", "asm.js Chrome (268 ms)", "ES6 Chrome (2898 ms)", "ES6 Edge (3240 ms)", "ES6 Firefox (5558 ms)"],
+  "datasets": [
+   {
+    "data":[57.26, 143.35, 162.43, 199.70, 223.80, 268.60, 2898.20, 3240.00, 5558.88],
+    "label":"Ausführungszeit (ms)"
+   }
+  ]
+ },
+ "options": { "responsive": "true" }
+}
+-->
+</canvas>
+				</section>
+				<section>
+					<h2>Fazit</h2>
+					<ul>
+						<li>Große Performancevorteile gegenüber JavaScript<ul><li>meist mindestens 10x</li><li>oftmals bis 40x</li></ul></li>
+						<li>asm.js bereits sehr stabil</li>
+						<li>Kompilierung nach WebAssembly noch fehleranfällig</li>
+						<li>Optimale Ergänzung zu JavaScript für kritische Codestellen</li>
+						<li>Hocheffiziente, plattformunabhängige Codebasen möglich</li>
+					</ul>
 				</section>
 			</div>
 		</div>
@@ -318,6 +342,30 @@ Compile your code to see a result!
 				center: false,
 				slideNumber: true,
 
+				chart: {
+					defaults: {
+						global: {
+							defaultFontFamily: 'Ubuntu, "sans-serif"',
+							defaultFontSize: 24,
+							title: { fontColor: "#FFF" },
+						},
+						legend: {
+							labels: { fontColor: "#FFF" },
+						},
+						scale: {
+							scaleLabel: { fontColor: "#FFF" },
+							gridLines: { color: "#888", zeroLineColor: "#888" },
+							ticks: { fontColor: "#FFF" },
+						}
+					},
+					line: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ], "borderDash": [ [5,10], [0,0] ]},
+					horizontalBar: {
+						backgroundColor: [ "#30bf30" , "#30bf30", "#30bf30" ]
+					},
+					pie: { backgroundColor: [ ["rgba(0,0,0,.8)" , "rgba(220,20,20,.8)", "rgba(20,220,20,.8)", "rgba(220,220,20,.8)", "rgba(20,20,220,.8)"] ]},
+					radar: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+				},
+
 				// More info https://github.com/hakimel/reveal.js#dependencies
 				dependencies: [
 					{ src: 'plugin/markdown/marked.js' },
@@ -326,7 +374,9 @@ Compile your code to see a result!
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() {
 						hljs.initHighlightingOnLoad();
 						hljs.configure({tabReplace: '    '});
-					} }
+					} },
+					{ src: 'plugin/chart/Chart.min.js' },
+					{ src: 'plugin/chart/csv2chart.js' }
 				]
 			});
 		</script>
