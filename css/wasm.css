@@ -24,6 +24,10 @@
   text-decoration: none;
 }
 
+b {
+    color: #30bf30;
+}
+
 .btn:hover {
   background: #34d934;
   background-image: -webkit-linear-gradient(top, #34d934, #2db32d);

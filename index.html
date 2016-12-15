@@ -346,10 +346,13 @@ end
 				</section>
 
 				<section>
-					<h2>Demos</h2>
+					<section>
+						<h1>Demos</h1>
+					</section>
 
 					<section>
-						<pre style="width: 100%" ><code id="code" class="hljs cpp" contenteditable data-trim style="line-height: 1.2em;font-size: 1em;">
+						<h2>SysProg Compiler</h2>
+						<pre style="width: 100%" ><code id="code" class="hljs cpp" contenteditable data-trim style="line-height: 1.2em;font-size: 1.2em; max-height: 500px;">
 /* Heron-Verfahren zur Berechnung der Quadratwurzel */
 
 int input;
@@ -371,7 +374,8 @@ print(xn);
 						<button class="btn" onclick="compile();">Compile</button>
 					</section>
 					<section>
-						<pre style="width: 100%" ><code id="asm" class="hljs no-highlight" contenteditable data-trim style="line-height: 1.2em;font-size: 1em; height: 17em;">
+						<h2>Compilerausgabe</h2>
+						<pre style="width: 100%" ><code id="asm" class="hljs no-highlight" contenteditable data-trim style="line-height: 1.2em;font-size: 1em; height: 22em;">
 						</code></pre>
 						<pre style="width: 100%" ><code id="result" class="hljs no-highlight" data-trim style="line-height: 1.2em;font-size: 2em;">
 Compile your code to see a result!
@@ -379,12 +383,13 @@ Compile your code to see a result!
 						<button class="btn" onclick="runASM();">Run</button>
 					</section>
 					<section>
+						<h2>Physiksimulation</h2>
 						<div class="domain"></div>
 						<button class="btn" id="spawn">Spawn</button>
 					</section>
 				</section>
 				<section>
-					<h2>Benchmark</h2>
+					<h2>Auswertung</h2>
 					<img style="background: none;
     border: none;
     box-shadow: none;" src="graph.png" />
@@ -416,7 +421,12 @@ Compile your code to see a result!
 				<section>
 					<h2>Fazit</h2>
 					<ul>
-						<li>Große Performancevorteile gegenüber JavaScript<ul><li>meist mindestens 10x</li><li>oftmals bis 40x</li></ul></li>
+						<li>Große Performancevorteile gegenüber JavaScript
+							<ul>
+								<li>meist mindestens <b>10x</b></li>
+								<li>oftmals bis <b>40x</b></li>
+							</ul>
+						</li>
 						<li>asm.js bereits sehr stabil</li>
 						<li>Kompilierung nach WebAssembly noch fehleranfällig</li>
 						<li>Optimale Ergänzung zu JavaScript für kritische Codestellen</li>
