@@ -93,6 +93,7 @@
 
 					<img src="wasm_green.svg"
 					     style="background: none; border: none; box-shadow: none;" />
+					<div>Christopher Serr</div>
 				</section>
 
 				<section>
@@ -137,19 +138,73 @@
 
 					<section>
 						<pre><code class="hljs javascript" data-trim style="line-height: 1.2em; font-size: 1.7em;">
+function asmJSFunktion() {
+	"use asm";
+	...
+}
+						</code></pre>
+						<ul>
+							<li>Aufbauend auf ECMAScript 5 Strict Mode</li>
+							<li>Definiert statisches Typsystem</li>
+							<li>Ahead of Time Kompilierung möglich</li>
+							<li>Keine JavaScript-Objekte oder Garbage Collector</li>
+							<li>Nur primitive Datentypen</li>
+						</ul>
+					</section>
+
+					<section>
+						<pre><code class="hljs javascript" data-trim style="line-height: 1.2em; font-size: 1.7em;">
 function add(a, b) {
 	a = a | 0;
 	b = b | 0;
 	return (a + b) | 0;
 }
 						</code></pre>
-						<div class="fragment">
-							<ul>
-								<li>Bitweises Oder mit 0 als 32-Bit Integer Annotation</li>
-								<li>Von älteren Browsern ignoriert</li>
-								<li>Von modernen Browsern als Optimierung erkannt</li>
-							</ul>
-						</div>
+						<ul>
+							<li>Bitweises Oder mit 0 als 32-Bit Integer Annotation</li>
+							<li>
+								Konvertiert alle JavaScript-Objekte zu Integer
+								<ul>
+									<li>Auch ohne asm.js Unterstützung</li>
+								</ul>
+							</li>
+							<li>
+								64-bit Integer problematisch
+								<ul>
+									<li>Müssen durch zwei Integer simuliert werden</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+
+					<section>
+						<pre><code class="hljs javascript" data-trim style="line-height: 1.2em; font-size: 1.7em;">
+function add(a, b) {
+	a = +a;
+	b = +b;
+	return +(a + b);
+}
+						</code></pre>
+						<ul>
+							<li>Unärer Plus-Operator zur 64-bit Float Annotation</li>
+							<li>Konvertiert alle JavaScript-Objekte zu 64-bit Float Werten</li>
+							<li>Ungültige Werte werden zu NaN</li>
+						</ul>
+					</section>
+
+					<section>
+						<pre><code class="hljs javascript" data-trim style="line-height: 1.2em; font-size: 1.7em;">
+function add(a, b) {
+	a = Math.fround(a);
+	b = Math.fround(b);
+	return Math.fround(a + b);
+}
+						</code></pre>
+						<ul>
+							<li>fround-Funktion rundet Werte zu 32-bit Float Werten</li>
+							<li>Ungültige Werte werden zu NaN</li>
+							<li>Muss nach Berechnungen wieder gerundet werden</li>
+						</ul>
 					</section>
 
 					<section>
@@ -164,13 +219,11 @@ function strlen(pointer) {
 	return (current - pointer) | 0;
 }
 						</code></pre>
-						<div class="fragment">
-							<ul>
-								<li>Heap wird als Array von Bytes kodiert</li>
-								<li>Zeiger stellen Indizes des Arrays dar</li>
-								<li>Umgeht Garbage Collection der Virtual Machine</li>
-							</ul>
-						</div>
+						<ul>
+							<li>Heap wird als Array von Bytes kodiert</li>
+							<li>Zeiger stellen Indizes des Arrays dar</li>
+							<li>Umgeht Garbage Collection der Virtual Machine</li>
+						</ul>
 					</section>
 				</section>
 
@@ -186,6 +239,12 @@ function strlen(pointer) {
 							<li>Unterstützt Apple, Microsoft, Google und Mozilla</li>
 							<li>Byteformat auf Basis von asm.js</li>
 							<li>Aufbauend auf JavaScript VM</li>
+							<li>Seit Oktober 2016 in Browser Preview Phase
+								<ul>
+									<li>Erste Version äquivalent zu asm.js</li>
+									<li>Wenn erfolgreich, Veröffentlichung Q1 2017</li>
+								</ul>
+							</li>
 						</ul>
 					</section>
 
@@ -223,23 +282,6 @@ int factorial(int n) {
 									</td>
 									<td style="padding: 0.2em 0.3em 0.2em 0.3em;">
 										<pre style="width: 100%" ><code class="hljs text" data-trim style="line-height: 1.2em;font-size: 1em;">
-20 00
-42 00
-51
-04 7e
-42 01
-05
-20 00
-20 00
-42 01
-7d
-10 00
-7e
-0b
-										</code></pre>
-									</td>
-									<td style="padding: 0.2em 0.3em 0.2em 0.3em;">
-										<pre style="width: 100%" ><code class="hljs text" data-trim style="line-height: 1.2em;font-size: 1em;">
 get_local 0
 i64.const 0
 i64.eq
@@ -255,10 +297,52 @@ else
 end
 										</code></pre>
 									</td>
+									<td style="padding: 0.2em 0.3em 0.2em 0.3em;">
+										<pre style="width: 100%" ><code class="hljs text" data-trim style="line-height: 1.2em;font-size: 1em;">
+20 00
+42 00
+51
+04 7e
+42 01
+05
+20 00
+20 00
+42 01
+7d
+10 00
+7e
+0b
+										</code></pre>
+									</td>
 								</tr>
 							</tbody>
 						</table>
 					</section>
+				</section>
+
+				<section>
+					<h2>
+						<img src="emscripten_icon.png" />
+						<span style="vertical-align: super;">Emscripten</span>
+					</h2>
+
+					<ul>
+						<li>Kompiliert nativen Code nach asm.js</li>
+						<li>Wrapper um LLVM's C/C++ Compiler Clang</li>
+						<li>Simuliert Unix-Umgebung für den Code
+							<ul>
+								<li>Virtuelles Dateisystem</li>
+								<li>OpenGL wird zu WebGL transformiert</li>
+								<li>SSE zu SIMD.js</li>
+							</ul>
+						</li>
+						<li>WebAssembly wird auch unterstützt
+							<ul>
+								<li>Basierend auf Binaryen-Tools</li>
+								<li>Transformation von asm.js nach WebAssembly</li>
+							</ul>
+						</li>
+					</ul>
 				</section>
 
 				<section>
